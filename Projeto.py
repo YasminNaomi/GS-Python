@@ -20,42 +20,38 @@ def mostrar_premios(pontos):
         if pontos >= pontos_necessarios:
             # Se o usuário tem pontos suficientes, mostra o prêmio e onde resgatar
             print(f"Você pode resgatar: {premio} (Pontos necessários: {pontos_necessarios})")
-            print(f"Você poderá resgatar o prêmio no site da *nome aleatório*.")
+            print(f"Você poderá resgatar o prêmio no site da nome aleatório.")
         else:
             # Se o usuário não tem pontos suficientes, mostra quantos pontos faltam
             pontos_faltando = pontos_necessarios - pontos
             print(f"Para {premio} faltam {pontos_faltando} pontos.")
 
-# Função para calcular e exibir o tempo restante para a próxima verificação
-def exibir_tempo_restante(tempo_restante):
-    horas_restantes = int(tempo_restante // 3600)
-    minutos_restantes = int((tempo_restante % 3600) // 60)
-    segundos_restantes = int(tempo_restante % 60)
-    print(f"Você poderá verificar o código novamente em {horas_restantes}h {minutos_restantes}m {segundos_restantes}s.")
-
 # Função principal do programa
 def main():
     pontos = 0  # Inicializa os pontos do usuário
+    ultima_verificacao = 0  # Timestamp da última verificação bem-sucedida
     intervalo_5_horas = 5 * 60 * 60  # Define o intervalo de 5 horas em segundos
 
     while True:
         codigo = input("Insira o código de 4 dígitos: ")  # Solicita o código ao usuário
-        
+        tempo_atual = time.time()  # Obtém o timestamp atual
+    
+    
         if verificar_codigo(codigo):
-            pontos += 3  # Adiciona 3 pontos se o código estiver correto
-            print(f"Código correto! Você ganhou 3 pontos. Total de pontos: {pontos}")
-            mostrar_premios(pontos)  # Mostra os prêmios disponíveis
-        else:
-            print("Código incorreto, tente novamente.")
+                pontos += 3  # Adiciona 3 pontos se o código estiver correto
+                print(f"Código correto! Você ganhou 3 pontos. Total de pontos: {pontos}")
+                mostrar_premios(pontos)  # Mostra os prêmios disponíveis
+                ultima_verificacao = tempo_atual  # Atualiza o timestamp da última verificação
+            else:
+                print("Código incorreto, tente novamente.")
         
         # Exibe a contagem regressiva para a próxima verificação
-        print("Aguarde 5 horas para inserir o próximo código.")
-        for _ in range(intervalo_5_horas):
-            time.sleep(1)  # Espera por um segundo
-            tempo_restante = intervalo_5_horas - _
-            exibir_tempo_restante(tempo_restante)
-        
-        print()  # Adiciona uma linha em branco para clareza
+        tempo_restante = intervalo_5_horas - (time.time() - ultima_verificacao)
+        horas_restantes = int(tempo_restante // 3600)
+        minutos_restantes = int((tempo_restante % 3600) // 60)
+        segundos_restantes = int(tempo_restante % 60)
+        print(f"Você poderá verificar o código novamente em {horas_restantes}h {minutos_restantes}m {segundos_restantes}s.")
+        print()
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     main()  # Chama a função principal do programa
