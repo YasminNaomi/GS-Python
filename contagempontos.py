@@ -20,7 +20,7 @@ def mostrar_premios(pontos):
         if pontos >= pontos_necessarios:
             # Se o usuário tem pontos suficientes, mostra o prêmio e onde resgatar
             print(f"Você pode resgatar: {premio} (Pontos necessários: {pontos_necessarios})")
-            print(f"Você poderá resgatar o prêmio no site da nome aleatório.")
+            print(f"Você poderá resgatar o prêmio no site da *nome aleatório*.")
         else:
             # Se o usuário não tem pontos suficientes, mostra quantos pontos faltam
             pontos_faltando = pontos_necessarios - pontos
@@ -35,23 +35,28 @@ def main():
     while True:
         codigo = input("Insira o código de 4 dígitos: ")  # Solicita o código ao usuário
         tempo_atual = time.time()  # Obtém o timestamp atual
-    
-    
-        if verificar_codigo(codigo):
+        
+        # Verifica se já passaram 5 horas desde a última verificação
+        if tempo_atual - ultima_verificacao >= intervalo_5_horas:
+            if verificar_codigo(codigo):
                 pontos += 3  # Adiciona 3 pontos se o código estiver correto
                 print(f"Código correto! Você ganhou 3 pontos. Total de pontos: {pontos}")
                 mostrar_premios(pontos)  # Mostra os prêmios disponíveis
                 ultima_verificacao = tempo_atual  # Atualiza o timestamp da última verificação
             else:
                 print("Código incorreto, tente novamente.")
+        else:
+            # Calcula quanto tempo falta para poder verificar o código novamente
+            tempo_restante = intervalo_5_horas - (tempo_atual - ultima_verificacao)
+            horas_restantes = int(tempo_restante // 3600)
+            minutos_restantes = int((tempo_restante % 3600) // 60)
+            segundos_restantes = int(tempo_restante % 60)
+            print(f"Você só pode verificar o código novamente em {horas_restantes}h {minutos_restantes}m {segundos_restantes}s.")
         
-        # Exibe a contagem regressiva para a próxima verificação
-        tempo_restante = intervalo_5_horas - (time.time() - ultima_verificacao)
-        horas_restantes = int(tempo_restante // 3600)
-        minutos_restantes = int((tempo_restante % 3600) // 60)
-        segundos_restantes = int(tempo_restante % 60)
-        print(f"Você poderá verificar o código novamente em {horas_restantes}h {minutos_restantes}m {segundos_restantes}s.")
-        print()
+        # Pergunta ao usuário se ele deseja continuar
+        continuar = input("Deseja continuar? (s/n): ").strip().lower()
+        if continuar != 's':
+            break
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()  # Chama a função principal do programa
